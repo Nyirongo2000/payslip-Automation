@@ -180,19 +180,19 @@ export function InvoicesTableSkeleton() {
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  NAME
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  GENDER
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
+                  EMPLOYEE_NO
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  DATE
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  DETAILS
                 </th>
                 <th
                   scope="col"

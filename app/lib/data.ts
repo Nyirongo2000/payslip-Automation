@@ -272,6 +272,7 @@ import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 import { payslips } from './placeholder-data';
 
+
 export async function fetchRevenue() {
   noStore();
   // Add noStore() here prevent the response from being cached.
@@ -365,20 +366,20 @@ export async function fetchFilteredPayslips(
     const payslips = await sql<PaySlipsTable>`
       SELECT
         payslips.id,
-        payslips.salary,
+        payslips.employee_id,
         payslips.pay_period,
         employees.name,
         employees.email,
-        employees.image_url
+        employees.image_url,
+        employees.position
       FROM payslips
-      JOIN employees ON payslips.employee_id = employee.id
+      JOIN employees ON payslips.employee_id = employees.id
       WHERE
         employees.name ILIKE ${`%${query}%`} OR
         employees.email ILIKE ${`%${query}%`} OR
-        payslips.amount::text ILIKE ${`%${query}%`} OR
-        payslips.date::text ILIKE ${`%${query}%`} OR
-        payslips.status ILIKE ${`%${query}%`}
-      ORDER BY payslips.ay_period DESC
+        payslips.pay_period::text ILIKE ${`%${query}%`} OR 
+        employees.position ILIKE ${`%${query}%`}
+      ORDER BY payslips.pay_period DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
@@ -400,8 +401,8 @@ export async function fetchPaySlipsPages(query: string) {
       employee.name ILIKE ${`%${query}%`} OR
       employees.email ILIKE ${`%${query}%`} OR
       payslips.salary::text ILIKE ${`%${query}%`} OR
-      payslips.pay_period::text ILIKE ${`%${query}%`} OR
-      payslips.status ILIKE ${`%${query}%`}
+      payslips.pay_period::text ILIKE ${`%${query}%`} 
+      
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);

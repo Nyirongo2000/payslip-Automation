@@ -1,6 +1,6 @@
 
 import { Metadata } from 'next';
-import Pagination from '@/app/ui/invoices/pagination';
+import Pagination from '@/app/ui/payslip/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
 import { TableRowSkeleton } from '@/app/ui/skeletons';

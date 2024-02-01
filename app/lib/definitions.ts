@@ -120,7 +120,6 @@ export type PaySlip = {
   id: string;
   employee_id: string;
   salary: number;
-  //
   date_of_employment: string;
   pay_period: string;
   currency: string;
@@ -145,7 +144,8 @@ export type PaySlipsTable = {
   id: string;
   employee_id: string;
   name: string;
-  date: string;
+  pay_period: string;
+  position:string;
 };
 
 export type PaySlipForm = {

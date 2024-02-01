@@ -401,7 +401,7 @@ export async function fetchPaySlipsPages(query: string) {
       employees.email ILIKE ${`%${query}%`} OR
       payslips.salary::text ILIKE ${`%${query}%`} OR
       payslips.pay_period::text ILIKE ${`%${query}%`} OR
-      payslips.status ILIKE ${`%${query}%`}
+      payslips.pay_period ILIKE ${`%${query}%`}
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);

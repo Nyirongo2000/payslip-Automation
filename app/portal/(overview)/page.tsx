@@ -1,52 +1,26 @@
-
 import React from 'react';
-import Form from '@/app/ui/invoices/create-form';
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
-import { lusitana } from '@/app/ui/fonts';
-import { Suspense } from 'react';
-import { RevenueChartSkeleton,LatestInvoicesSkeleton,CardsSkeleton } from '@/app/ui/skeletons';
-
-
 
 export default function Page() {
-      
-
   return (
     <>
-    
-      <div>
-        <th className="centre">PERSONAL DETAILS</th>
-        <table>
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">PERSONAL DETAILS</h1>
+        <table className="table-fixed w-full">
           <tbody>
-          <tr>
-              <td>Employee Full Name:</td>
-              {/* <td><input type="text" disabled /></td> */}
+            <tr className="flex">
+              <td className="py-7 flex-1">Full Name:</td>
+              <td className="py-7 flex-1">Number:</td>
             </tr>
-            <tr>
-              <td>Employee DOB:</td>
-              {/* <td><input type="text" disabled /></td> */}
+            <tr className="flex">
+              <td className="py-7 flex-1">DOB:</td>
+              <td className="py-7 flex-1">Grade:</td>
             </tr>
-            <tr>
-              <td>Employee Number:</td>
-              {/* <td><input type="text" disabled /></td> */}
+            <tr className="flex">
+              <td className="py-7 flex-1">Position:</td>
+              <td className="py-7 flex-1">Email:</td>
             </tr>
-            <tr>
-              <td>Employment Date:</td>
-              {/* <td><input type="date" disabled /></td> */}
-            </tr>
-            <tr>
-              <td>Salary:</td>
-              {/* <td><input type="text" disabled /></td> */}
-            </tr>
-            <tr>
-              <td>Department:</td>
-              {/* <td><input type="text" disabled /></td> */}
-            </tr>
-            <tr>
-              <td>Position:</td>
-              {/* <td><input type="text" disabled /></td> */}
+            <tr className="flex">
+              <td className="py-7 flex-1">Image:</td>
             </tr>
           </tbody>
         </table>

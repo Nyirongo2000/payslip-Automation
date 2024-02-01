@@ -22,7 +22,7 @@ const links = [
     icon: DocumentDuplicateIcon,
   },
   { name: 'Salary Ledger',
-  href: '/portalsalaryLedger/',
+  href: '/portal/salaryLedger',
   icon: DocumentDuplicateIcon },
 ];
 

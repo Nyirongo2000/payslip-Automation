@@ -1,85 +1,44 @@
 import { fetchPaySlipsById } from "@/app/lib/data";
-import Auth from "@/app/ui/auth";
 
 export default async function PaySlipDetailsForm({ id }: { id: string }) {
   const payslips = await fetchPaySlipsById(id);
 
   return (
     <>
-    <Auth>
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">MY PAYSLIP</h1>
         <table className="table-fixed w-full">
           <tbody>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong>PaySlip ID : </strong>9
-              </td>
-              <td className="py-7 flex-1">
-                <strong>EMPLOYEE NUMBER : </strong>
-                E11{" "}
-              </td>
+              <td className="py-7 flex-1">PaySlip ID:9</td>
+              <td className="py-7 flex-1">EMPLOYEE NUMBER:E11 </td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong>SALARY : </strong>
-                3040
-              </td>
-              <td className="py-7 flex-1">
-                <strong>EMPLOYEMENT DATE : </strong>
-                Mar 10,2022
-              </td>
+              <td className="py-7 flex-1">SALARY:3040</td>
+              <td className="py-7 flex-1">EMPLOYEMENT DATE:Mar 10,2022</td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong> PAY PERIOD : </strong>
-                Aug 08,2023{" "}
-              </td>
-              <td className="py-7 flex-1">
-                <strong>CURRENCY : </strong>
-                MWK
-              </td>
+              <td className="py-7 flex-1">PAY PERIOD:Aug 08,2023 </td>
+              <td className="py-7 flex-1">CURRENCY:MWK</td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong>DEPARTMENT : </strong>
-                Human Resource
-              </td>
-              <td className="py-7 flex-1">
-                <strong>POSITION : </strong>
-                Human Resource Manager
-              </td>
+              <td className="py-7 flex-1">DEPARTMENT:Human Resource</td>
+              <td className="py-7 flex-1">POSITION:Human Resource Manager</td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong>PAYMENT METHOD : </strong>
-                Direct Deposit
-              </td>
-              <td className="py-7 flex-1">
-                <strong>GROSS TOTAL : </strong>
-                3040
-              </td>
+              <td className="py-7 flex-1">PAYMENT METHOD:Direct Deposit</td>
+              <td className="py-7 flex-1">GROSS TOTAL:3040</td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong> DEDUCTION MASM : </strong>
-                100
-              </td>
-              <td className="py-7 flex-1">
-                <strong>DEDUCTION PAYE : </strong>
-                40
-              </td>
+              <td className="py-7 flex-1">DEDUCTION MASM:100</td>
+              <td className="py-7 flex-1">DEDUCTION PAYE:40</td>
             </tr>
             <tr className="flex">
-              <td className="py-7 flex-1">
-                <strong>NET SALARY : </strong>
-                2900
-              </td>
+              <td className="py-7 flex-1">NET SALARY:2900</td>
             </tr>
           </tbody>
         </table>
       </div>
-      </Auth>
     </>
   );
 }

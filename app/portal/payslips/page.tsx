@@ -1,7 +1,6 @@
 import Pagination from '@/app/ui/payslip/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/payslip/table';
-import { CreateInvoice } from '@/app/ui/payslip/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -24,8 +23,7 @@ export default async function Page({
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
   
-  // const totalPages = await fetchPaySlipsPages(query);
-  const totalPages = 6
+  const totalPages = await fetchPaySlipsPages(query);
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">

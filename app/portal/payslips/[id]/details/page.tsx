@@ -1,4 +1,5 @@
 import Form from '@/app/ui/payslip/edit-form';
+import PaySlipDetailsForm from '@/app/ui/payslip/payslipdetailsform';
 import Breadcrumbs from '@/app/ui/payslip/breadcrumbs';
 import { fetchPaySlipsById,fetchEmployees } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
@@ -21,13 +22,13 @@ export default async function Page({ params }: { params: { id: string } }) {
         breadcrumbs={[
           { label: 'PaySlip', href: '/portal/payslips' },
           {
-            label: 'Edit Invoice',
+            label: 'View Payslip',
             href: `/portal/payslips/${id}/details`,
             active: true,
           },
         ]}
       />
-      <Form payslip={payslip} employees={employees} />
+      <PaySlipDetailsForm id={id} />
     </main>
   );
 }

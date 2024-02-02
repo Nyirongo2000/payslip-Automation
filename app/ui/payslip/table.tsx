@@ -2,7 +2,8 @@ import Image from "next/image";
 import { PaySlipDetails } from "@/app/ui/payslip/buttons";
 import InvoiceStatus from "@/app/ui/payslip/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
-import { fetchFilteredPayslips } from "@/app/lib/data";
+import { fetchFilteredPayslips} from "@/app/lib/data";
+
 
 export default async function InvoicesTable({
   query,
@@ -11,9 +12,25 @@ export default async function InvoicesTable({
   query: string;
   currentPage: number;
 }) {
-  const payslips = await fetchFilteredPayslips(query, currentPage);
+  // const payslips = await fetchFilteredPayslips(query, currentPage);
+
+
+  const employeeId = "2ee6c845-1d12-4f87-b22e-927775883b24";
+  const payslips = await fetchFilteredPayslips(query,currentPage,employeeId);
+
+
+  
+
+// try {
+//   const payslipsForEmployee = await fetchPayslipsForEmployee(employeeId);
+//   console.log("Payslips for employee:", payslipsForEmployee);
+// } catch (error) {
+//   console.error("Error fetching payslips for employee:", error.message);
+// }
+
 
   return (
+
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
@@ -100,5 +117,6 @@ export default async function InvoicesTable({
         </div>
       </div>
     </div>
+  
   );
 }

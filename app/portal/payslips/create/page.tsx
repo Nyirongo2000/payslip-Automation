@@ -5,7 +5,7 @@ import { fetchEmployees } from '@/app/lib/data';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Create Invoice',
+  title: 'Create Payslips',
 };
  
 export default async function Page() {

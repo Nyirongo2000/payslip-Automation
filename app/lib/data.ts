@@ -241,24 +241,11 @@
 //   }
 // }
 
-
-
 /////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 /////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-import { sql } from '@vercel/postgres';
+import { sql } from "@vercel/postgres";
 import {
   PaySlipsTable,
   PaySlipForm,
@@ -266,12 +253,11 @@ import {
   EmployeeField,
   User,
   Revenue,
-} from './definitions';
+} from "./definitions";
 
-import { formatCurrency } from './utils';
-import { unstable_noStore as noStore } from 'next/cache';
-import { payslips } from './placeholder-data';
-
+import { formatCurrency } from "./utils";
+import { unstable_noStore as noStore } from "next/cache";
+import { payslips } from "./placeholder-data";
 
 export async function fetchRevenue() {
   noStore();
@@ -291,11 +277,10 @@ export async function fetchRevenue() {
 
     return data.rows;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch revenue data.");
   }
 }
-
 
 export async function fetchLatestPaySlips() {
   noStore();
@@ -313,51 +298,52 @@ export async function fetchLatestPaySlips() {
     }));
     return LatestPaySlip;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch the latest payslips.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch the latest payslips.");
   }
 }
 
-// export async function fetchCardData() {
+
+const ITEMS_PER_PAGE = 6;
+// export async function fetchFilteredPayslips(
+//   query: string,
+//   currentPage: number
+// ) {
 //   noStore();
+//   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
 //   try {
-//     // You can probably combine these into a single SQL query
-//     // However, we are intentionally splitting them to demonstrate
-//     // how to initialize multiple queries in parallel with JS.
-//     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-//     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-//     const invoiceStatusPromise = sql`SELECT
-//          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-//          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-//          FROM invoices`;
+//     const payslips = await sql<PaySlipsTable>`
+//       SELECT
+//         payslips.id,
+//         payslips.employee_id,
+//         payslips.pay_period,
+//         employees.name,
+//         employees.email,
+//         employees.image_url,
+//         employees.position
+//       FROM payslips
+//       JOIN employees ON payslips.employee_id = employees.id
+//       WHERE
+//         employees.name ILIKE ${`%${query}%`} OR
+//         employees.email ILIKE ${`%${query}%`} OR
+//         payslips.pay_period::text ILIKE ${`%${query}%`} OR 
+//         employees.position ILIKE ${`%${query}%`}
+//       ORDER BY payslips.pay_period DESC
+//       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+//     `;
 
-//     const data = await Promise.all([
-//       invoiceCountPromise,
-//       customerCountPromise,
-//       invoiceStatusPromise,
-//     ]);
-
-//     const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-//     const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-//     const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-//     const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
-
-//     return {
-//       numberOfCustomers,
-//       numberOfInvoices,
-//       totalPaidInvoices,
-//       totalPendingInvoices,
-//     };
+//     return payslips.rows;
 //   } catch (error) {
-//     console.error('Database Error:', error);
-//     throw new Error('Failed to fetch card data.');
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch payslips.");
 //   }
 // }
 
-const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredPayslips(
   query: string,
   currentPage: number,
+  employeeId: string
 ) {
   noStore();
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -367,29 +353,54 @@ export async function fetchFilteredPayslips(
       SELECT
         payslips.id,
         payslips.employee_id,
-        payslips.pay_period,
         employees.name,
-        employees.email,
-        employees.image_url,
+        payslips.pay_period,
         employees.position
       FROM payslips
       JOIN employees ON payslips.employee_id = employees.id
       WHERE
-        employees.name ILIKE ${`%${query}%`} OR
+        (employees.name ILIKE ${`%${query}%`} OR
         employees.email ILIKE ${`%${query}%`} OR
         payslips.pay_period::text ILIKE ${`%${query}%`} OR 
-        employees.position ILIKE ${`%${query}%`}
+        employees.position ILIKE ${`%${query}%`})
+        AND payslips.employee_id = ${employeeId}
       ORDER BY payslips.pay_period DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
     return payslips.rows;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch payslips.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch payslips.");
   }
 }
 
+
+// export async function fetchPayslipsForEmployee(
+//   employeeId: string
+// ): Promise<PaySlipsTable[]> {
+//   try {
+//     noStore();
+//     const payslips = await sql<PaySlipsTable>`
+//       SELECT
+//         payslips.id,
+//         payslips.employee_id,
+//         employees.name,
+//         payslips.pay_period,
+//         employees.position
+//       FROM payslips
+//       JOIN employees ON payslips.employee_id = employees.id
+//       WHERE payslips.employee_id = ${employeeId}
+//       ORDER BY payslips.pay_period DESC
+//       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+//     `;
+
+//     return payslips.rows;
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch payslips for the employee.");
+//   }
+// }
 
 export async function fetchPaySlipsPages(query: string) {
   noStore();
@@ -398,7 +409,7 @@ export async function fetchPaySlipsPages(query: string) {
     FROM payslips
     JOIN employees ON payslips.employee_id = employees.id
     WHERE
-      employee.name ILIKE ${`%${query}%`} OR
+      employees.name ILIKE ${`%${query}%`} OR
       employees.email ILIKE ${`%${query}%`} OR
       payslips.salary::text ILIKE ${`%${query}%`} OR
       payslips.pay_period::text ILIKE ${`%${query}%`} 
@@ -408,13 +419,43 @@ export async function fetchPaySlipsPages(query: string) {
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
     return totalPages;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch total number of payslips.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of payslips.");
   }
 }
 
-   
-    
+// export async function fetchPaySlipsById(id: string) {
+//   noStore();
+//   try {
+//     const data = await sql<PaySlipForm>`
+//       SELECT
+//         payslips.id,
+//         payslips.employee_id,
+//         payslips.salary,
+//         payslips.position,
+//         payslips.date_of_employment,
+//         payslips.pay_period,
+//         payslips.currency,
+//         payslips.department,
+//         payslips.method_of_payment,
+//         payslips.gross_total,
+//         payslips.deduction_masm,
+//         payslips.deduction_paye,
+//         payslips.net_salary
+//       FROM payslips
+//       WHERE payslips.id = ${id};
+//     `;
+
+//     const payslip = data.rows.map((payslip) => ({
+//       ...payslip,
+//     }));
+
+//     return payslip[0];
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch Payslip.");
+//   }
+// }
 export async function fetchPaySlipsById(id: string) {
   noStore();
   try {
@@ -432,25 +473,22 @@ export async function fetchPaySlipsById(id: string) {
         payslips.gross_total,
         payslips.deduction_masm,
         payslips.deduction_paye,
-        payslips.net_salary,
-        payslips>
-      payslips.status
+        payslips.net_salary
       FROM payslips
       WHERE payslips.id = ${id};
     `;
 
-    const payslip = data.rows.map((payslip) => ({
+    const payslips = data.rows.map((payslip) => ({
       ...payslip,
-      // Convert amount from cents to dollars
-      amount: payslip.amount / 100,
     }));
 
-    return payslip[0];
+    return payslips;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch Payslip.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Payslip.");
   }
 }
+
 
 export async function fetchEmployees() {
   noStore();
@@ -466,8 +504,8 @@ export async function fetchEmployees() {
     const employees = data.rows;
     return employees;
   } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all employees.');
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all employees.");
   }
 }
 
@@ -510,7 +548,7 @@ export async function getUser(email: string) {
     const user = await sql`SELECT * FROM users WHERE email=${email}`;
     return user.rows[0] as User;
   } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Failed to fetch user.');
+    console.error("Failed to fetch user:", error);
+    throw new Error("Failed to fetch user.");
   }
 }

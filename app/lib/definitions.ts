@@ -130,9 +130,6 @@ export type PaySlip = {
   deduction_masm:number;
   deduction_paye:number;
   netSalary:number;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-
 };
 
 export type Revenue = {
@@ -151,10 +148,17 @@ export type PaySlipsTable = {
 export type PaySlipForm = {
   id: string;
   employee_id: string;
-  amount: number;
-  //
+  salary: number;
   date_of_employment: string;
-  status: 'pending' | 'paid';
+  pay_period: string;
+  currency: string;
+  department: string;
+  position: string;
+  method_of_payment:string;
+  gross_total:number;
+  deduction_masm:number;
+  deduction_paye:number;
+  net_salary:number;
 };
 
 export type LatestPaySlip = {

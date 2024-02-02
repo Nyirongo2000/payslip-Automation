@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  BookOpenIcon,
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
@@ -19,6 +20,7 @@ const links = [
     href: '/portal/payslips',
     icon: DocumentDuplicateIcon,
   },
+  { name: 'Salary Ledger', href: '/portal/salaryledger', icon: BookOpenIcon },
 ];
 
 export default function NavLinks() {

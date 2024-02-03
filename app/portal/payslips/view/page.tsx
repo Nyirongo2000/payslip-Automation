@@ -6,7 +6,7 @@ export default async function PaySlipDetailsForm({ id }: { id: string }) {
 
   return (
     <>
-    <Auth>
+      {/* <Auth> */}
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">MY PAYSLIP</h1>
         <table className="table-fixed w-full">
@@ -79,7 +79,7 @@ export default async function PaySlipDetailsForm({ id }: { id: string }) {
           </tbody>
         </table>
       </div>
-      </Auth>
+      {/* </Auth> */}
     </>
   );
 }

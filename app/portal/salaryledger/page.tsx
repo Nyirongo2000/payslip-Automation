@@ -1,41 +1,54 @@
-import React from "react";
-import { SalaryLedgerEntry } from "@/app/ui/payslip/buttons";
+import Pagination from "@/app/ui/payslip/pagination";
+import Search from "@/app/ui/search";
+import Table from "@/app/ui/salaryledger/table";
+import { CreateSalaryLedger } from "@/app/ui/payslip/buttons";
+import { lusitana } from "@/app/ui/fonts";
+import {
+  PaySlipsTableSkeleton,
+  SalaryLedgerTableSkeleton
+} from "@/app/ui/skeletons";
+import { Suspense } from "react";
+import { fetchSalaryLedgerPages } from "@/app/lib/data";
 
-export default function Page() {
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "SalaryLedger",
+};
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string;
+    page?: string;
+  };
+}) {
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+
+  // const totalPages = await fetchInvoicesPages(query);
+  // const totalPages = await fetchSalaryLedgerPages(query);
+  const totalPages = 6;
+
   return (
-    <>
-      <div className="row px-auto">
-        <SalaryLedgerEntry />
+    <div className="w-full">
+      <div className="flex w-full items-center justify-between">
+        <h1 className={`${lusitana.className} text-2xl`}>SalaryLedger</h1>
       </div>
-      <div className="row">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold mb-4">SALARY LEDGER</h1>
-          <table className="table-fixed w-full">
-            <tbody>
-              <tr className="flex bg-gray-200">
-                <th className="py-3 px-6 flex-1">Name</th>
-                <th className="py-3 px-6 flex-1">Employees_ID</th>
-                <th className="py-3 px-6 flex-1">Annual Salary</th>
-                <th className="py-3 px-6 flex-1">Hourly Rate</th>
-                <th className="py-3 px-6 flex-1">Overtime Rate</th>
-                <th className="py-3 px-6 flex-1">Gross Weekly</th>
-                <th className="py-3 px-6 flex-1">Tax With-holding Rate</th>
-                <th className="py-3 px-6 flex-1">Net weekly pay</th>
-              </tr>
-              <tr className="flex">
-                <td className="py-3 px-6 flex-1">John Doe</td>
-                <td className="py-3 px-6 flex-1">EMP123</td>
-                <td className="py-3 px-6 flex-1">$60,000</td>
-                <td className="py-3 px-6 flex-1">$25</td>
-                <td className="py-3 px-6 flex-1">$30</td>
-                <td className="py-3 px-6 flex-1">$1,200</td>
-                <td className="py-3 px-6 flex-1">15%</td>
-                <td className="py-3 px-6 flex-1">$1,020</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Search salaryledger..." />
+        <CreateSalaryLedger />
       </div>
-    </>
+      <Suspense
+        key={query + currentPage}
+        fallback={<SalaryLedgerTableSkeleton />}
+      >
+        <Table query={query} currentPage={currentPage} />
+      </Suspense>
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
+      </div>
+    </div>
   );
 }

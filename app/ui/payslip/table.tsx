@@ -1,11 +1,10 @@
 import Image from "next/image";
 import { PaySlipDetails } from "@/app/ui/payslip/buttons";
-import InvoiceStatus from "@/app/ui/payslip/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchFilteredPayslips} from "@/app/lib/data";
 
 
-export default async function InvoicesTable({
+export default async function PaySlipTable({
   query,
   currentPage,
 }: {
@@ -64,22 +63,22 @@ export default async function InvoicesTable({
           <table className="hidden min-w-full text-gray-900 md:table">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+                <th scope="col" className="px-4 py-5 font-bold sm:pl-6">
                   Date
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-bold">
                   Employee ID
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-bold">
                   Employee Name
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-bold">
                   Position
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-bold">
                 
                 </th>
-                <th scope="col" className="px-3 py-5 font-medium">
+                <th scope="col" className="px-3 py-5 font-bold">
                   Details
                 </th>
               </tr>

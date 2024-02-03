@@ -180,14 +180,16 @@
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-const { db } = require('@vercel/postgres');
+const { db } = require("@vercel/postgres");
 const {
   payslips,
   employees,
   revenue,
+  salaryledgers,
   users,
-} = require('../app/lib/placeholder-data.js');
-const bcrypt = require('bcrypt');
+} = require("../app/lib/placeholder-data.js");
+
+const bcrypt = require("bcrypt");
 
 async function seedUsers(client) {
   try {
@@ -213,7 +215,7 @@ async function seedUsers(client) {
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
         ON CONFLICT (id) DO NOTHING;
       `;
-      }),
+      })
     );
 
     console.log(`Seeded ${insertedUsers.length} users`);
@@ -223,7 +225,7 @@ async function seedUsers(client) {
       users: insertedUsers,
     };
   } catch (error) {
-    console.error('Error seeding users:', error);
+    console.error("Error seeding users:", error);
     throw error;
   }
 }
@@ -271,8 +273,8 @@ async function seedPaySlips(client) {
           net_salary )
         VALUES (${payslip.employee_id}, ${payslip.salary}, ${payslip.date_of_employment},${payslip.pay_period},${payslip.currency},${payslip.department},${payslip.position},${payslip.method_of_payment},${payslip.gross_total},${payslip.deduction_masm},${payslip.deduction_paye},${payslip.net_salary})
         ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
+      `
+      )
     );
 
     console.log(`Seeded ${insertedPayslips.length} payslips`);
@@ -282,7 +284,7 @@ async function seedPaySlips(client) {
       payslips: insertedPayslips,
     };
   } catch (error) {
-    console.error('Error seeding payslips:', error);
+    console.error("Error seeding payslips:", error);
     throw error;
   }
 }
@@ -312,8 +314,8 @@ async function seedEmployees(client) {
         INSERT INTO employees (id, name, email, image_url, position, grade)
         VALUES (${employee.id}, ${employee.name}, ${employee.email}, ${employee.image_url},${employee.position},${employee.grade})
         ON CONFLICT (id) DO NOTHING;
-      `,
-      ),
+      `
+      )
     );
 
     console.log(`Seeded ${insertedEmployees.length} employees`);
@@ -323,10 +325,102 @@ async function seedEmployees(client) {
       employees: insertedEmployees,
     };
   } catch (error) {
-    console.error('Error seeding employees:', error);
+    console.error("Error seeding employees:", error);
     throw error;
   }
 }
+
+//
+async function seedSalaryLedgers(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "salaryledger" table if it doesn't exist
+    // const createTable = await client.sql`
+    //   CREATE TABLE IF NOT EXISTS salaryledgers (
+    //     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    //     name VARCHAR(255) NOT NULL,
+    //     email VARCHAR(255) NOT NULL,
+    //     image_url VARCHAR(255) NOT NULL,
+    //     position VARCHAR(255) NOT NULL,
+    //     grade VARCHAR(255) NOT NULL,
+    //     date_of_employment VARCHAR(255) NOT NULL,
+    //     pay_period VARCHAR(255) NOT NULL,
+    //     currency VARCHAR(255) NOT NULL,
+    //     department VARCHAR(255) NOT NULL,
+    //     method_of_payment VARCHAR(255) NOT NULL,
+    //     gross_total VARCHAR(255) NOT NULL,
+    //     deduction_masm VARCHAR(255) NOT NULL,
+    //     deduction_paye VARCHAR(255) NOT NULL,
+    //     net_salary INT NOT NULL
+    //   );
+    // `;
+ const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS salaryledgers (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT NOT NULL,
+        image_url VARCHAR(255) NOT NULL,
+        position VARCHAR(255) NOT NULL,
+        grade VARCHAR(255) NOT NULL,
+        date_of_employment DATE NOT NULL,
+        pay_period DATE NOT NULL,
+        currency VARCHAR(255) NOT NULL,
+        department VARCHAR(255) NOT NULL,
+        method_of_payment VARCHAR(255) NOT NULL,
+        gross_total INT NOT NULL,
+        deduction_masm INT NOT NULL,
+        deduction_paye INT NOT NULL,
+        net_salary INT NOT NULL
+      );
+    `;
+    console.log(`Created "salaryledgers" table`);
+
+    // Insert data into the "salaryledger" table
+    const insertedSalaryLedgers = await Promise.all(
+      salaryledgers.map(
+        (salaryledger) => client.sql`
+        INSERT INTO salaryledgers (id,name ,
+        email ,
+        image_url ,
+        position ,
+        grade ,
+        date_of_employment ,
+        pay_period ,
+        currency ,
+        department ,
+        method_of_payment ,
+        gross_total ,
+        deduction_masm ,
+        deduction_paye ,
+        net_salary )
+        VALUES (${salaryledger.id}, ${salaryledger.name}, ${salaryledger.email}, ${salaryledger.image_url},${salaryledger.position},${salaryledger.grade},${salaryledger.date_of_employment} ,
+          ${salaryledger.pay_period} ,
+          ${salaryledger.currency} ,
+          ${salaryledger.department}  ,
+          ${salaryledger.method_of_payment}  ,
+          ${salaryledger.gross_total}  ,
+          ${salaryledger.deduction_masm}  ,
+          ${salaryledger.deduction_paye}  ,
+          ${salaryledger.net_salary})
+        ON CONFLICT (id) DO NOTHING;
+      `
+      )
+    );
+
+    console.log(`Seeded ${insertedSalaryLedgers.length}  salaryledgers`);
+
+    return {
+      createTable,
+      salaryledgers: insertedSalaryLedgers,
+    };
+  } catch (error) {
+    console.error("Error seeding salaryledgers:", error);
+    throw error;
+  }
+}
+
+///////////////////////
 
 async function seedRevenue(client) {
   try {
@@ -347,8 +441,8 @@ async function seedRevenue(client) {
         INSERT INTO revenue (month, revenue)
         VALUES (${rev.month}, ${rev.revenue})
         ON CONFLICT (month) DO NOTHING;
-      `,
-      ),
+      `
+      )
     );
 
     console.log(`Seeded ${insertedRevenue.length} revenue`);
@@ -358,7 +452,7 @@ async function seedRevenue(client) {
       revenue: insertedRevenue,
     };
   } catch (error) {
-    console.error('Error seeding revenue:', error);
+    console.error("Error seeding revenue:", error);
     throw error;
   }
 }
@@ -370,13 +464,14 @@ async function main() {
   await seedEmployees(client);
   await seedPaySlips(client);
   await seedRevenue(client);
+  await seedSalaryLedgers(client);
 
   await client.end();
 }
 
 main().catch((err) => {
   console.error(
-    'An error occurred while attempting to seed the database:',
-    err,
+    "An error occurred while attempting to seed the database:",
+    err
   );
 });

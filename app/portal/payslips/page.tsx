@@ -2,7 +2,7 @@ import Pagination from '@/app/ui/payslip/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/payslip/table';
 import { lusitana } from '@/app/ui/fonts';
-import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
+import { PaySlipsTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { fetchPaySlipsPages} from '@/app/lib/data';
 
@@ -32,7 +32,7 @@ export default async function Page({
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search payslips..." />
       </div>
-       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+       <Suspense key={query + currentPage} fallback={<PaySlipsTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">

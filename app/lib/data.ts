@@ -253,6 +253,8 @@ import {
   EmployeeField,
   User,
   Revenue,
+  SalaryLedgerTable,
+  SalaryLedger
 } from "./definitions";
 
 import { formatCurrency } from "./utils";
@@ -261,19 +263,9 @@ import { payslips } from "./placeholder-data";
 
 export async function fetchRevenue() {
   noStore();
-  // Add noStore() here prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
-
     const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    // console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
@@ -303,7 +295,6 @@ export async function fetchLatestPaySlips() {
   }
 }
 
-
 const ITEMS_PER_PAGE = 6;
 // export async function fetchFilteredPayslips(
 //   query: string,
@@ -327,7 +318,7 @@ const ITEMS_PER_PAGE = 6;
 //       WHERE
 //         employees.name ILIKE ${`%${query}%`} OR
 //         employees.email ILIKE ${`%${query}%`} OR
-//         payslips.pay_period::text ILIKE ${`%${query}%`} OR 
+//         payslips.pay_period::text ILIKE ${`%${query}%`} OR
 //         employees.position ILIKE ${`%${query}%`}
 //       ORDER BY payslips.pay_period DESC
 //       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
@@ -376,6 +367,34 @@ export async function fetchFilteredPayslips(
 }
 
 
+export async function fetchFilteredSalaryLedger(
+  query: string,
+  currentPage: number
+) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const payslips = await sql<SalaryLedgerTable>`
+      SELECT
+        *
+      FROM salaryledgers
+      WHERE
+        (salaryledgers.name ILIKE ${`%${query}%`} OR
+        salaryledgers.email ILIKE ${`%${query}%`} OR
+        salaryledgers.pay_period::text ILIKE ${`%${query}%`} OR 
+        salaryledgers.position ILIKE ${`%${query}%`})
+      ORDER BY salaryledgers.date_of_employment DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return payslips.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch salary Ledgers.");
+  }
+}
+
 // export async function fetchPayslipsForEmployee(
 //   employeeId: string
 // ): Promise<PaySlipsTable[]> {
@@ -401,6 +420,28 @@ export async function fetchFilteredPayslips(
 //     throw new Error("Failed to fetch payslips for the employee.");
 //   }
 // }
+
+export async function fetchSalaryLedgerPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM salaryledgers
+    JOIN employees ON salaryledgers.employee_id = employees.id
+    WHERE
+      employees.name ILIKE ${`%${query}%`} OR
+      employees.email ILIKE ${`%${query}%`} OR
+      salaryledgers.salary::text ILIKE ${`%${query}%`} OR
+      salaryledgers.pay_period::text ILIKE ${`%${query}%`} 
+      
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch total number of salaryledgers.");
+  }
+}
 
 export async function fetchPaySlipsPages(query: string) {
   noStore();
@@ -456,6 +497,44 @@ export async function fetchPaySlipsPages(query: string) {
 //     throw new Error("Failed to fetch Payslip.");
 //   }
 // }
+
+export async function fetchSalaryLedgerId(id: string) {
+  noStore();
+  try {
+    const data = await sql<SalaryLedgerTable>`
+      SELECT
+      salaryledgers.id,
+      salaryledgers.name,
+      salaryledgers.email,
+      salaryledgers.image_url,
+      salaryledgers.position,
+      salaryledgers.grade,
+      salaryledgers.employee_id,
+      salaryledgers.salary,
+      salaryledgers.date_of_employment,
+      salaryledgers.pay_period,
+      salaryledgers.currency,
+      salaryledgers.department,
+      salaryledgers.method_of_payment,
+      salaryledgers.gross_total,
+      salaryledgers.deduction_masm,
+      salaryledgers.deduction_paye,
+      salaryledgers.netSalary,
+      FROM salaryledgers
+      WHERE salaryledgers.id = ${id};
+    `;
+
+    const salaryledgers = data.rows.map((salaryledger) => ({
+      ...salaryledger,
+    }));
+
+    return salaryledgers;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch SalaryLedger.");
+  }
+}
+
 export async function fetchPaySlipsById(id: string) {
   noStore();
   try {
@@ -489,7 +568,6 @@ export async function fetchPaySlipsById(id: string) {
   }
 }
 
-
 export async function fetchEmployees() {
   noStore();
   try {
@@ -509,39 +587,6 @@ export async function fetchEmployees() {
   }
 }
 
-// export async function fetchFilteredCustomers(query: string) {
-//   noStore();
-//   try {
-//     const data = await sql<CustomersTableType>`
-// 		SELECT
-// 		  customers.id,
-// 		  customers.name,
-// 		  customers.email,
-// 		  customers.image_url,
-// 		  COUNT(invoices.id) AS total_invoices,
-// 		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-// 		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
-// 		FROM customers
-// 		LEFT JOIN invoices ON customers.id = invoices.customer_id
-// 		WHERE
-// 		  customers.name ILIKE ${`%${query}%`} OR
-//         customers.email ILIKE ${`%${query}%`}
-// 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-// 		ORDER BY customers.name ASC
-// 	  `;
-
-//     const customers = data.rows.map((customer) => ({
-//       ...customer,
-//       total_pending: formatCurrency(customer.total_pending),
-//       total_paid: formatCurrency(customer.total_paid),
-//     }));
-
-//     return customers;
-//   } catch (err) {
-//     console.error('Database Error:', err);
-//     throw new Error('Failed to fetch customer table.');
-//   }
-// }
 
 export async function getUser(email: string) {
   try {

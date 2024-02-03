@@ -254,7 +254,8 @@ import {
   User,
   Revenue,
   SalaryLedgerTable,
-  SalaryLedger
+  SalaryLedger,
+  PaySlip,
 } from "./definitions";
 
 import { formatCurrency } from "./utils";
@@ -366,7 +367,6 @@ export async function fetchFilteredPayslips(
   }
 }
 
-
 export async function fetchFilteredSalaryLedger(
   query: string,
   currentPage: number
@@ -468,7 +468,7 @@ export async function fetchPaySlipsPages(query: string) {
 // export async function fetchPaySlipsById(id: string) {
 //   noStore();
 //   try {
-//     const data = await sql<PaySlipForm>`
+//     const data = await sql<PaySlip>`
 //       SELECT
 //         payslips.id,
 //         payslips.employee_id,
@@ -497,6 +497,31 @@ export async function fetchPaySlipsPages(query: string) {
 //     throw new Error("Failed to fetch Payslip.");
 //   }
 // }
+
+export async function fetchPaySlipById(id: string) {
+  noStore();
+  try {
+    const data = await sql<PaySlipForm>`
+      SELECT
+        payslips.id,
+        payslips.employee_id,
+        payslips.salary,
+        payslips.position
+      FROM payslips
+      WHERE payslips.id = ${id};
+    `;
+
+    const payslip = data.rows.map((payslip) => ({
+      ...payslip,
+      // Convert amount from cents to dollars
+    }));
+
+    return payslip[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch payslip.");
+  }
+}
 
 export async function fetchSalaryLedgerId(id: string) {
   noStore();
@@ -535,38 +560,71 @@ export async function fetchSalaryLedgerId(id: string) {
   }
 }
 
-export async function fetchPaySlipsById(id: string) {
-  noStore();
-  try {
-    const data = await sql<PaySlipForm>`
-      SELECT
-        payslips.id,
-        payslips.employee_id,
-        payslips.salary,
-        payslips.position,
-        payslips.date_of_employment,
-        payslips.pay_period,
-        payslips.currency,
-        payslips.department,
-        payslips.method_of_payment,
-        payslips.gross_total,
-        payslips.deduction_masm,
-        payslips.deduction_paye,
-        payslips.net_salary
-      FROM payslips
-      WHERE payslips.id = ${id};
-    `;
+// export async function fetchPaySlipsById(id: string) {
+//   noStore();
+//   try {
+//     const data = await sql<PaySlipForm>`
+//       SELECT
+//         payslips.id,
+//         payslips.employee_id,
+//         payslips.salary,
+//         payslips.position,
+//         payslips.date_of_employment,
+//         payslips.pay_period,
+//         payslips.currency,
+//         payslips.department,
+//         payslips.method_of_payment,
+//         payslips.gross_total,
+//         payslips.deduction_masm,
+//         payslips.deduction_paye,
+//         payslips.net_salary
+//       FROM payslips
+//       WHERE payslips.id = ${id};
+//     `;
 
-    const payslips = data.rows.map((payslip) => ({
-      ...payslip,
-    }));
+//     const payslips = data.rows.map((payslip) => ({
+//       ...payslip,
+//     }));
 
-    return payslips;
-  } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch Payslip.");
-  }
-}
+//     return payslips[0];
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch Payslip.");
+//   }
+// }
+
+// export async function fetchPaySlipById(id: string) {
+//   noStore();
+//   try {
+//     const data = await sql<PaySlipForm>`
+//       SELECT
+//         payslips.id,
+//         payslips.employee_id,
+//         payslips.salary,
+//         payslips.position,
+//         payslips.date_of_employment,
+//         payslips.pay_period,
+//         payslips.currency,
+//         payslips.department,
+//         payslips.method_of_payment,
+//         payslips.gross_total,
+//         payslips.deduction_masm,
+//         payslips.deduction_paye,
+//         payslips.net_salary
+//       FROM payslips
+//       WHERE payslips.id = ${id};
+//     `;
+
+//     if (data.rows.length === 0) {
+//       throw new Error("Payslip not found.");
+//     }
+
+//     return data.rows[0];
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to fetch Payslip.");
+//   }
+// }
 
 export async function fetchEmployees() {
   noStore();
@@ -586,7 +644,6 @@ export async function fetchEmployees() {
     throw new Error("Failed to fetch all employees.");
   }
 }
-
 
 export async function getUser(email: string) {
   try {

@@ -14,7 +14,9 @@ import clsx from 'clsx';
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'BioData', href: '/portal', icon: UserIcon },
+  { name: 'Dashboard', href: '/portal', icon: HomeIcon },
+  { name: 'Userdetails', href: '/portal/overview', icon: UserIcon },
+  
   {
     name: 'Payslips',
     href: '/portal/payslips',
@@ -24,6 +26,9 @@ const links = [
 ];
 
 export default function NavLinks() {
+
+
+  
   const pathname = usePathname();
   return (
     <>

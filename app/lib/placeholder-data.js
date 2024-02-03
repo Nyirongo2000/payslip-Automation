@@ -164,7 +164,7 @@ const payslips = [
     pay_period: "2023-03-20",
     currency: "MWK",
     department: "Marketing",
-    position: "Marketing Coordinator",
+    position: "Product Manager",
     method_of_payment: "Direct Deposit",
     gross_total: 3040,
     deduction_masm: 100,

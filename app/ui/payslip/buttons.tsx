@@ -41,6 +41,21 @@ export function PaySlipDetails({ id }: { id: string }) {
   );
 }
 
+export function PaySlipDetailsEmployee({ id }: { id: string }) {
+  return (
+    // <Link
+    //   href={`/portal/payslips/${id}/details`}
+    //   className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    // >
+    <Link
+      href={`/employee/view`}
+      className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+    >
+      <span className="hidden md:block">Pay Slip Details</span>
+    </Link>
+  );
+}
+
 export function UpdatePayslip({ id }: { id: string }) {
   return (
     <Link

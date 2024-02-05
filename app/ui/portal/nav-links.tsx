@@ -10,19 +10,21 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { CurrencyDollarIcon } from '@heroicons/react/20/solid';
 
 // Map of links to display in the side navigation.
 // Depending on the size of the application, this would be stored in a database.
 const links = [
-  { name: 'Dashboard', href: '/portal', icon: HomeIcon },
-  { name: 'Userdetails', href: '/portal/overview', icon: UserIcon },
-  
+  { name: "Dashboard", href: "/portal", icon: HomeIcon },
+  { name: "Userdetails", href: "/portal/overview", icon: UserIcon },
+
   {
-    name: 'Payslips',
-    href: '/portal/payslips',
+    name: "Payslips",
+    href: "/portal/payslips",
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Salary Ledger', href: '/portal/salaryledger', icon: BookOpenIcon },
+  { name: "Salary Ledger", href: "/portal/salaryledger", icon: BookOpenIcon },
+  { name: "connect", href: "/portal/connect", icon:CurrencyDollarIcon },
 ];
 
 export default function NavLinks() {

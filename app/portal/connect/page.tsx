@@ -34,11 +34,14 @@ export default function Page() {
     <>
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider chains={chains}>
-          <div className="flex flex-row justify-center">
+          <div className="flex flex-row justify-center mt-10">
+            <hr />
             <div className="flex flex-col">
               <ConnectButton />
-              <p>press to connet to sync Payslips</p>
-            </div>
+              {/* <div className=" "> */}
+                {/* <p>press to connet to sync Payslips</p> */}
+              {/* </div> */}
+            </div>  
           </div>
         </RainbowKitProvider>
       </WagmiConfig>
